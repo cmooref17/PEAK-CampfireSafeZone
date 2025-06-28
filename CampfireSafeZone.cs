@@ -18,7 +18,6 @@ namespace PEAK_CampfireSafeZone
         [HarmonyPrefix]
         public static void CampfireAwake(Campfire __instance)
         {
-            Plugin.Log("Campfire created.");
             campfires.Add(__instance);
         }
 
@@ -58,7 +57,7 @@ namespace PEAK_CampfireSafeZone
                 if (!character.isBot && !character.data.dead && !IsPlayerInRangeCampfire(character))
                 {
                     if (allPlayersNearCampfire)
-                        Plugin.Log("All players near campfire: false");
+                        Plugin.Log("Not all players are near campfire. Fog progression resumed.");
                     allPlayersNearCampfire = false;
                     return true;
                 }
@@ -66,7 +65,7 @@ namespace PEAK_CampfireSafeZone
             if (atLeastOnePlayerAlive)
             {
                 if (!allPlayersNearCampfire)
-                    Plugin.Log("All players near campfire: true");
+                    Plugin.Log("All players are near campfire. Fog progression halted.");
                 allPlayersNearCampfire = true;
                 return false;
             }
