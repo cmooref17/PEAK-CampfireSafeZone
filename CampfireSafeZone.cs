@@ -4,20 +4,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using static CharacterAfflictions;
 
-namespace PEAK_AfkCampfire
+namespace PEAK_CampfireSafeZone
 {
     [HarmonyPatch]
-    public static class AfkCampfire
+    public static class CampfireSafeZone
     {
-        internal static PhotonView fogView;
         public static List<Campfire> campfires = new List<Campfire>();
-        public static HashSet<Character> playersNearFire = new HashSet<Character>();
+        public static HashSet<Character> playersNearCampfire = new HashSet<Character>();
+        public static bool allPlayersNearCampfire = false;
 
 
         [HarmonyPatch(typeof(Campfire), "Awake")]
         [HarmonyPrefix]
         public static void CampfireAwake(Campfire __instance)
         {
+            Plugin.Log("Campfire created.");
             campfires.Add(__instance);
         }
 
@@ -42,56 +43,36 @@ namespace PEAK_AfkCampfire
         }
 
 
-        [HarmonyPatch(typeof(Fog), "Start")]
-        [HarmonyPrefix]
-        public static void FogStart(Fog __instance)
-        {
-            fogView = __instance.GetComponent<PhotonView>();
-        }
-
-
         [HarmonyPatch(typeof(Fog), "Movement")]
+        [HarmonyPatch(typeof(OrbFogHandler), "Move")]
+        [HarmonyPatch(typeof(OrbFogHandler), "WaitToMove")]
         [HarmonyPrefix]
-        public static bool StopFogMovementAndTimer(Fog __instance)
+        public static bool StopFogMovementAndTimer()
         {
-            if (!fogView.IsMine)
-                return true;
-
             bool atLeastOnePlayerAlive = false;
             var allCharacters = PlayerHandler.GetAllPlayerCharacters();
             for (int i = 0; i < allCharacters.Count; i++)
             {
-                if (allCharacters[i].isBot)
-                    continue;
                 var character = allCharacters[i];
                 atLeastOnePlayerAlive = atLeastOnePlayerAlive || !character.data.dead;
                 if (!character.isBot && !character.data.dead && !IsPlayerInRangeCampfire(character))
+                {
+                    if (allPlayersNearCampfire)
+                        Plugin.Log("All players near campfire: false");
+                    allPlayersNearCampfire = false;
                     return true;
+                }
             }
-            return !atLeastOnePlayerAlive; // Only stop if a player is alive
+            if (atLeastOnePlayerAlive)
+            {
+                if (!allPlayersNearCampfire)
+                    Plugin.Log("All players near campfire: true");
+                allPlayersNearCampfire = true;
+                return false;
+            }
+            allPlayersNearCampfire = false;
+            return true;
         }
-
-
-        /*[HarmonyPatch(typeof(Fog), "Move")]
-        [HarmonyPrefix]
-        public static bool StopFogMovement(Fog __instance)
-        {
-            if (!fogView.IsMine)
-                return true;
-
-            bool atLeastOnePlayerAlive = false;
-            var allCharacters = PlayerHandler.GetAllPlayerCharacters();
-            for (int i = 0; i < allCharacters.Count; i++)
-            {
-                if (allCharacters[i].isBot)
-                    continue;
-                var character = allCharacters[i];
-                atLeastOnePlayerAlive = atLeastOnePlayerAlive || !character.data.dead;
-                if (!character.isBot && !character.data.dead && !IsPlayerInRangeCampfire(character))
-                    return true;
-            }
-            return !atLeastOnePlayerAlive; // Only stop if a player is alive
-        }*/
 
 
         public static bool IsPlayerInRangeCampfire(Character character)
@@ -106,15 +87,15 @@ namespace PEAK_AfkCampfire
                 }
                 if (Vector3.Distance(character.Center, campfire.transform.position) < 15)
                 {
-                    if (!playersNearFire.Contains(character))
+                    if (!playersNearCampfire.Contains(character))
                         Plugin.Log("Player: (" + character.characterName + ") ENTERED campfire proximity.");
-                    playersNearFire.Add(character);
+                    playersNearCampfire.Add(character);
                     return true;
                 }
             }
-            if (playersNearFire.Contains(character))
+            if (playersNearCampfire.Contains(character))
                 Plugin.Log("Player: (" + character.characterName + ") LEFT campfire proximity.");
-            playersNearFire.Remove(character);
+            playersNearCampfire.Remove(character);
             return false;
         }
     }

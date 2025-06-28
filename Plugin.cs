@@ -8,7 +8,7 @@ using BepInEx;
 using HarmonyLib;
 using BepInEx.Logging;
 
-namespace PEAK_AfkCampfire
+namespace PEAK_CampfireSafeZone
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
     public class Plugin : BaseUnityPlugin

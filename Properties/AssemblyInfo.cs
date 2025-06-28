@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PEAK-AfkCampfire")]
+[assembly: AssemblyTitle("PEAK-CampfireSafeZone")]
 [assembly: AssemblyDescription("Mod made by flipf17")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PEAK-AfkCampfire")]
+[assembly: AssemblyProduct("PEAK-CampfireSafeZone")]
 [assembly: AssemblyCopyright("Copyright ©  2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

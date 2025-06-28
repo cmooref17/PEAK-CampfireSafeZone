@@ -7,8 +7,8 @@
     <ProjectGuid>{D5C9CCEF-388A-4CF7-92B3-D6F5EA4B546D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PEAK_AfkCampfire</RootNamespace>
-    <AssemblyName>PEAK-AfkCampfire</AssemblyName>
+    <RootNamespace>PEAK_CampfireSafeZone</RootNamespace>
+    <AssemblyName>PEAK-CampfireSafeZone</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -59,19 +59,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CampfirePatcher.cs" />
+    <Compile Include="CampfireSafeZone.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist "%25APPDATA%25\r2modmanPlus-local\PEAK\profiles\Default\BepInEx\plugins\flipf17-AfkCampfire\" (
-    xcopy /Y "$(TargetDir)$(TargetName).dll" "%25APPDATA%25\r2modmanPlus-local\PEAK\profiles\Default\BepInEx\plugins\flipf17-AfkCampfire\"
+    <PostBuildEvent>if exist "%25APPDATA%25\r2modmanPlus-local\PEAK\profiles\Default\BepInEx\plugins\flipf17-CampfireSafeZone\" (
+    xcopy /Y "$(TargetDir)$(TargetName).dll" "%25APPDATA%25\r2modmanPlus-local\PEAK\profiles\Default\BepInEx\plugins\flipf17-CampfireSafeZone\"
 )
-if exist "%25APPDATA%25\r2modmanPlus-local\PEAK\profiles\Flip\BepInEx\plugins\flipf17-AfkCampfire\" (
-    xcopy /Y "$(TargetDir)$(TargetName).dll" "%25APPDATA%25\r2modmanPlus-local\PEAK\profiles\Flip\BepInEx\plugins\flipf17-AfkCampfire\"
+if exist "%25APPDATA%25\r2modmanPlus-local\PEAK\profiles\Flip\BepInEx\plugins\flipf17-CampfireSafeZone\" (
+    xcopy /Y "$(TargetDir)$(TargetName).dll" "%25APPDATA%25\r2modmanPlus-local\PEAK\profiles\Flip\BepInEx\plugins\flipf17-CampfireSafeZone\"
 )
-xcopy /Y "$(TargetDir)$(TargetName).dll" "C:\Program Files (x86)\Steam\steamapps\common\PEAK\BepInEx\plugins\flipf17-AfkCampfire\"</PostBuildEvent>
+xcopy /Y "$(TargetDir)$(TargetName).dll" "C:\Program Files (x86)\Steam\steamapps\common\PEAK\BepInEx\plugins\flipf17-CampfireSafeZone\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
