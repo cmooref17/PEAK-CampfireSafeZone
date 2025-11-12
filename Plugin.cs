@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using System.Reflection;
-using System.Linq.Expressions;
 using BepInEx;
 using HarmonyLib;
 using BepInEx.Logging;
@@ -47,8 +45,5 @@ namespace PEAK_CampfireSafeZone
         internal static void Log(string message) => logger.LogInfo(message);
         internal static void LogError(string message) => logger.LogError(message);
         internal static void LogWarning(string message) => logger.LogWarning(message);
-        //internal static void LogVerbose(string message) { if (ConfigSettings.verboseLogs.Value) logger.LogInfo("[VERBOSE] " + message); }
-        //internal static void LogErrorVerbose(string message) { if (ConfigSettings.verboseLogs.Value) logger.LogError("[VERBOSE] " + message); }
-        //internal static void LogWarningVerbose(string message) { if (ConfigSettings.verboseLogs.Value) logger.LogWarning("[VERBOSE] " + message); }
     }
 }

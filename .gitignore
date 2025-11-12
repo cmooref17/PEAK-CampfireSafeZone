@@ -1,0 +1,6 @@
+**/bin/
+**/obj/
+*.zip
+*.7z
+*.csproj.user
+*.vs

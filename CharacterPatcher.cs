@@ -7,20 +7,10 @@ using static CharacterAfflictions;
 namespace PEAK_CampfireSafeZone
 {
     [HarmonyPatch]
-    public static class CampfireSafeZone
+    public static class CharacterPatcher
     {
-        public static List<Campfire> campfires = new List<Campfire>();
         public static HashSet<Character> playersNearCampfire = new HashSet<Character>();
         public static bool allPlayersNearCampfire = false;
-
-
-        [HarmonyPatch(typeof(Campfire), "Awake")]
-        [HarmonyPrefix]
-        public static void CampfireAwake(Campfire __instance)
-        {
-            campfires.Add(__instance);
-        }
-
 
         [HarmonyPatch(typeof(CharacterAfflictions), "AddStatus")]
         [HarmonyPrefix]
@@ -42,49 +32,33 @@ namespace PEAK_CampfireSafeZone
         }
 
 
-        [HarmonyPatch(typeof(Fog), "Movement")]
+        [HarmonyPatch(typeof(Fog), "Movement")] // May be unused, or will be used in the future?
         [HarmonyPatch(typeof(OrbFogHandler), "Move")]
         [HarmonyPatch(typeof(OrbFogHandler), "WaitToMove")]
         [HarmonyPrefix]
         public static bool StopFogMovementAndTimer()
         {
-            bool atLeastOnePlayerAlive = false;
-            var allCharacters = PlayerHandler.GetAllPlayerCharacters();
-            for (int i = 0; i < allCharacters.Count; i++)
-            {
-                var character = allCharacters[i];
-                atLeastOnePlayerAlive = atLeastOnePlayerAlive || !character.data.dead;
-                if (!character.isBot && !character.data.dead && !IsPlayerInRangeCampfire(character))
-                {
-                    if (allPlayersNearCampfire)
-                        Plugin.Log("Not all players are near campfire. Fog progression resumed.");
-                    allPlayersNearCampfire = false;
-                    return true;
-                }
-            }
-            if (atLeastOnePlayerAlive)
-            {
-                if (!allPlayersNearCampfire)
-                    Plugin.Log("All players are near campfire. Fog progression halted.");
-                allPlayersNearCampfire = true;
-                return false;
-            }
-            allPlayersNearCampfire = false;
-            return true;
+            bool stopFog = AllPlayersInRangeCampfire();
+            return stopFog;
         }
 
 
         public static bool IsPlayerInRangeCampfire(Character character)
         {
-            for (int i = 0; i < campfires.Count; i++)
+            Vector3 characterPosition;
+            try { characterPosition = character.Center; }
+            catch { return false; }
+
+            for (int i = 0; i < RunManagerPatcher.campfires.Count; i++)
             {
-                var campfire = campfires[i];
-                if (campfire == null)
+                Campfire campfire = RunManagerPatcher.campfires[i];
+                if (!campfire)
                 {
-                    campfires.RemoveAt(i--);
+                    RunManagerPatcher.campfires.RemoveAt(i--);
                     continue;
                 }
-                if (Vector3.Distance(character.Center, campfire.transform.position) < 15)
+
+                if (Vector3.Distance(characterPosition, campfire.transform.position) < 15)
                 {
                     if (!playersNearCampfire.Contains(character))
                         Plugin.Log("Player: (" + character.characterName + ") ENTERED campfire proximity.");
@@ -96,6 +70,33 @@ namespace PEAK_CampfireSafeZone
                 Plugin.Log("Player: (" + character.characterName + ") LEFT campfire proximity.");
             playersNearCampfire.Remove(character);
             return false;
+        }
+
+
+        public static bool AllPlayersInRangeCampfire()
+        {
+            bool _allPlayersNearCampfire = true;
+            bool atLeastOnePlayerAlive = false;
+            foreach (var character in PlayerHandler.GetAllPlayerCharacters())
+            {
+                atLeastOnePlayerAlive = atLeastOnePlayerAlive || !character.data.dead;
+                if (!character.isBot && !character.data.dead && !IsPlayerInRangeCampfire(character))
+                {
+                    _allPlayersNearCampfire = false;
+                    break;
+                }
+            }
+
+            if (!atLeastOnePlayerAlive)
+                _allPlayersNearCampfire = false;
+
+            if (_allPlayersNearCampfire != allPlayersNearCampfire)
+            {
+                allPlayersNearCampfire = _allPlayersNearCampfire;
+                Plugin.Log(allPlayersNearCampfire ? "All players are near campfire. Fog progression and run timer halted." : "Not all players are near campfire. Fog progression and run timer resumed.");
+            }
+
+            return allPlayersNearCampfire;
         }
     }
 }

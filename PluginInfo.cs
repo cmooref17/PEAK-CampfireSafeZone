@@ -6,6 +6,6 @@ namespace PEAK_CampfireSafeZone
     {
         public const string PLUGIN_GUID = "flipf17.CampfireSafeZone";
         public const string PLUGIN_NAME = "CampfireSafeZone";
-        public const string PLUGIN_VERSION = "1.0.0";
+        public const string PLUGIN_VERSION = "1.0.2";
     }
 }
